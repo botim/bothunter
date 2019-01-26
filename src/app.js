@@ -6,19 +6,20 @@ console.log('starting');
 import getURL from './modules/getURL'
 import Parser from './modules/Parser';
 
+import FBConn from './modules/FBConn';
 
 const testURL = {
     video: '/ufi/reaction/profile/browser/fetch/?limit=10&total_count=351&ft_ent_identifier=281112199228679',
     post: 'netanyahu/photos/a.10151681566507076/10156096314307076',
     likes: '10156096314337076',
-    user: 'peter.huwel'  //'moshe.dzanashvili'  // 'michael.even.54' // MAYASR
+    user: 'peter.huwel',  //'moshe.dzanashvili'  // 'michael.even.54' // MAYASR
+    itemID: '366827403332071',
+    userID:'550385403'
 };
 
 
 async function App() {
     console.log('Loading...');
-
-
 
 
     async function getUserLikesFromPost(postId, fullUrl) {
@@ -95,8 +96,10 @@ async function App() {
 
     // getUserFrinds(testURL.user);
     // getUserLikesFromPost(null, testURL.video);
-    testPageLoad('/story.php?story_fbid=2622896591058463&id=366827403332071');
+    // testPageLoad('/story.php?story_fbid=2622896591058463&id=366827403332071');
 
+    // FBConn.getLikes(testURL.itemID);
+    FBConn.getUser(testURL.userID);
 }
 
 
