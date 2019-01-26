@@ -42,7 +42,8 @@ module.exports = {
             nextItemsUrl: ''
         };
         reObj.nextItemsUrl = this.getNextUrl(data);
-        reObj.total = this.testSelector('total', data).text().replace('All', '');
+        const response = this.testSelector('total', data);
+        reObj.total = (response && response.length) ? response.text().replace('All', '') : null;
 
         const likes = this.testSelector('userLikes', data);
         if (likes && likes.length){

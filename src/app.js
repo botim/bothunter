@@ -1,14 +1,14 @@
 "use strict";
 
-console.log('starting');
-// let FBConn = require('./modules/FBConn.js');
-
 import getURL from './modules/getURL'
 import Parser from './modules/Parser';
 
-import FBConn from './modules/FBConn';
+// Unmark below, to use FB samples
+// import FBConn from './modules/FBConn';
 
-const testURL = {
+
+
+const testData = {
     video: '/ufi/reaction/profile/browser/fetch/?limit=10&total_count=351&ft_ent_identifier=281112199228679',
     post: 'netanyahu/photos/a.10151681566507076/10156096314307076',
     likes: '10156096314337076',
@@ -17,73 +17,56 @@ const testURL = {
     userID:'550385403'
 };
 
+async function getData(initUrl, functionName){
+
+    let info = {
+        list: [],
+        total: 0,
+        nextItemsUrl: ''
+    };
+
+
+    await getURL.loadURL(initUrl).then((data) => {
+        if (data) {
+            const tmp = Parser[functionName](data);
+            tmp.list.forEach((item) => console.log(item));
+
+            info.list = [...info.list, ...tmp.list];
+            info.nextItemsUrl = tmp.nextItemsUrl;
+            if (tmp.total){
+                info.total = tmp.total;
+            }
+
+            if (info.nextItemsUrl){
+               getData(null, info.nextItemsUrl);
+            } else {
+                console.log('End of list');
+            }
+        } else {
+            console.log('No Data');
+        }
+    });
+    return info;
+}
+
 
 async function App() {
     console.log('Loading...');
 
+    /*
+    * Sample functions to loop through some data types
+    * */
 
-    async function getUserLikesFromPost(postId, fullUrl) {
+    async function getUsersFromID(postId, fullUrl) {
         const url = (postId) ? "browse/likes/?id=" + postId : fullUrl;
-
-        await getURL.loadURL(url).then((data) => {
-
-            if (data) {
-                const users = Parser.getUserLikesFromPost(data);
-                users.list.forEach((u) => console.log(u.name));
-                if (users.nextItemsUrl){
-                    getUserLikesFromPost(null, users.nextItemsUrl);
-                } else {
-                    console.log('End of like list');
-                }
-            } else {
-                console.log('No Data');
-            }
-        });
-    }
-
-    async function getUsersFromComments(postId, fullUrl) {
-        const url = (postId) ? "browse/likes/?id=" + postId : fullUrl;
-
-        await getURL.loadURL(url).then((data) => {
-
-            if (data) {
-                const users = Parser.getUserLikesFromPost(data);
-                users.list.forEach((u) => console.log(u.name));
-                if (users.nextItemsUrl){
-                    getUserLikesFromPost(null, users.nextItemsUrl);
-                } else {
-                    console.log('End of like list');
-                }
-            } else {
-                console.log('No Data');
-            }
-        });
+        getData(url, 'getUserLikesFromPost');
     }
 
 
     async function getUserFrinds(userName, fullUrl){
         const url = (userName) ? userName + '/friends' : fullUrl;
-        await getURL.loadURL(url).then(data => {
+        getData(url, 'getFriendsListFromUser');
 
-            if (data){
-                const friends = Parser.getFriendsListFromUser(data);
-
-                console.log('friends list', friends.list.length);
-                console.log('totalFriends: ', friends.total);
-
-                friends.list.forEach((f) => console.log(f.name));
-
-                if (friends.nextItemsUrl){
-                    getUserFrinds(friends.nextItemsUrl);
-                } else {
-                    console.log('End of friends list');
-                }
-            }
-            if (!data){
-                console.log('No DATA');
-            }
-
-        })
     }
 
     async function testPageLoad(url){
@@ -94,12 +77,14 @@ async function App() {
     }
 
 
-    // getUserFrinds(testURL.user);
-    // getUserLikesFromPost(null, testURL.video);
+    // getUsersFromID(testData.user); // <<< Need fix
+
+     getUsersFromID(null, testData.video);
     // testPageLoad('/story.php?story_fbid=2622896591058463&id=366827403332071');
 
-    // FBConn.getLikes(testURL.itemID);
-    FBConn.getUser(testURL.userID);
+    // FB API samples
+    // FBConn.getLikes(testData.itemID);
+    // FBConn.getUser(testData.userID);
 }
 
 
