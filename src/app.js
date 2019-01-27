@@ -63,6 +63,12 @@ async function App() {
     }
 
 
+    async function getSharesFromID(postId, fullUrl) {
+        const url = (postId) ? "browse/shares/?id=" + postId : fullUrl;
+        getData(url, 'getUserSharesFromPost');
+    }
+
+
     async function getUserFrinds(userName, fullUrl){
         const url = (userName) ? userName + '/friends' : fullUrl;
         getData(url, 'getFriendsListFromUser');
@@ -79,7 +85,8 @@ async function App() {
 
     // getUsersFromID(testData.user); // <<< Need fix
 
-     getUsersFromID(null, testData.video);
+    // getUsersFromID(null, testData.video);
+    getSharesFromID(testData.itemID);
     // testPageLoad('/story.php?story_fbid=2622896591058463&id=366827403332071');
 
     // FB API samples
