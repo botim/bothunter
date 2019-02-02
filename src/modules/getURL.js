@@ -1,12 +1,10 @@
 
 import puppeteer from 'puppeteer';
+import {cookie, userAgent} from '../../conf/conf';
 
 // settings
 const baseurl = 'http://m.facebook.com/';
 
-const cookie = 'fr=0KgX4GMptclnHZ9qh.AWV0dX2f30k9_H1aQe1L2GP9xKE.Bax3uv.RT.Fw8.0.0.BcP7WB.AWXVxiku; sb=_J8CW4AQlTIzFC8dv0vndc0s; datr=_J8CW6NvLHqAPlgT8HSFslLj; c_user=100000913008569; xs=19%3ALRZbkGRGwty5Cg%3A2%3A1526898806%3A20786%3A15166; act=1547594911305%2F17; wd=1296x644; dpr=2; presence=EDvF3EtimeF1547594591EuserFA21B00913008569A2EstateFDt3F_5b_5dEutc3F1541075385853G547594591587CEchFDp_5f1B00913008569F2CC';
-
-const userAgent = 'Googlebot/2.1 (+http://www.google.com/bot.html)';
 
 module.exports = {
     loadURL: async function (url) {
@@ -35,7 +33,7 @@ module.exports = {
                 const headers = request.headers();
                 headers['Access-Control-Allow-Origin'] = '*';
 
-                headers['Cookie'] = cookie
+                headers['Cookie'] = cookie;
 
                 request.continue({headers});
             });
@@ -49,9 +47,9 @@ module.exports = {
             if (response._status < 400) {
                 // await page.waitFor('#m_more_friends a');
 
-                // await page.waitForNavigation( { waitUntil : 'networkidle0' } );
-
-                console.log('Loading page');
+                console.log('Loading page: ', fullurl);
+                // await page.waitForNavigation( { waitUntil : 'networkidle2' } );
+                await page.waitFor(2000);
                 const html = await page.content();
 
                 await browser.close();
