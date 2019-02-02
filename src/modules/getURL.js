@@ -4,13 +4,16 @@ import {cookie, userAgent} from '../../conf/conf';
 
 // settings
 const baseurl = 'http://m.facebook.com/';
-
+const puppeteerConf = {
+    // args: [ '--proxy-server=5.160.219.86:8080' ],
+    headless: true
+};
 
 module.exports = {
     loadURL: async function (url) {
-        let fullurl = baseurl + url;
+        const fullurl = baseurl + url;
+        const browser = await puppeteer.launch(puppeteerConf);
 
-        const browser = await puppeteer.launch({headless: true});
         const page = await browser.newPage();
         await page.setRequestInterception(true);
         await page.setUserAgent(userAgent);
@@ -49,9 +52,8 @@ module.exports = {
 
                 console.log('Loading page: ', fullurl);
                 // await page.waitForNavigation( { waitUntil : 'networkidle2' } );
-                await page.waitFor(2000);
+                await page.waitFor(1000);
                 const html = await page.content();
-
                 await browser.close();
 
                 return html;

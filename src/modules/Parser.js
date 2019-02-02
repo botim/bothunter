@@ -3,11 +3,16 @@ import cheerio from 'cheerio';
 module.exports = {
 
     selectors: {
+        errors:['div:nth-child(2) div div:nth-child(1) > span'],
         userLikes: ['._55wp a:first-child strong', ' div:nth-child(2) > a:nth-child(1) a', 'h3.be a', ' div div div div div a:nth-child(1)'],
         userFriends: [' td.v.s:nth-child(2) a.ce', ' td.v.s:nth-child(2) a.bn'],
         total: ['div.t > a.u.v:nth-child(1)', 'h3.ca.i'],
         shares: ['div.v div.y a:nth-child(1)'],
         NextUrl: ['#m_more_friends a', 'table.i.j tr:nth-child(1) td div.e a']
+    },
+
+    search: {
+        NextUrl: ['See More']
     },
 
     testSelector(selector, data){
@@ -19,6 +24,10 @@ module.exports = {
                 re = $(sel);
             }
         });
+
+        if (!re || !re.length){
+            $('span').filter(r => $(data).text().trim().indexOf(search[selector]) > -1).parent();
+        }
 
         return re;
     },
@@ -33,15 +42,30 @@ module.exports = {
         return (str.indexOf(delimiter)) ? str.substr(0, str.indexOf(delimiter)) : str;
     },
 
+
     getListByType(data, type) {
         const reObj = {
             list: [],
             total: 0,
-            nextItemsUrl: ''
+            nextItemsUrl: '',
+            err: ''
         };
+
+        const err = this.testSelector('errors', data);
+        if (err && err.length){
+            let errStr;
+            err.each((i, er) => {
+                errStr = (er.children && er.children[0]) ? reObj.err + er.children[0].data : reObj.err + er;
+            });
+            if (errStr.indexOf('error') > -1){
+                reObj.err = errStr;
+                return reObj;
+            }
+        }
+
         reObj.nextItemsUrl = this.getNextUrl(data);
         const response = this.testSelector('total', data);
-        reObj.total = (response && response.length) ? response.text().replace('All', '') : null;
+        reObj.total = (response && response.length) ? response.text().replace( /^\D+/g, '') : null;
 
         const tmp = this.testSelector(type, data);
         if (tmp && tmp.length){

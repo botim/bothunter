@@ -1,103 +1,85 @@
 "use strict";
 
-import getURL from './modules/getURL'
-import Parser from './modules/Parser';
+import funcs from './modules/Funcs';
 
-// Unmark below, to use FB samples
-// import FBConn from './modules/FBConn';
-
+import express from 'express';
 
 
 const testData = {
     video: '/ufi/reaction/profile/browser/fetch/?limit=10&total_count=351&ft_ent_identifier=281112199228679',
-    likesFullUrl:'ufi/reaction/profile/browser/?ft_ent_identifier=2027002237395095',
+    likesFullUrl: 'ufi/reaction/profile/browser/?ft_ent_identifier=2027002237395095',
     post: 'netanyahu/photos/a.10151681566507076/10156096314307076',
     likes: '2027002237395095',
     user: 'peter.huwel',  //'moshe.dzanashvili'  // 'michael.even.54' // MAYASR
     itemID: '366827403332071',
-    userID:'550385403'
+    userID: '550385403'
 };
 
-async function getData(initUrl, functionName, type){
 
-    let info = {
-        list: [],
-        total: 0,
-        nextItemsUrl: ''
-    };
+const app = express();
+const port = 1984;
 
 
-    await getURL.loadURL(initUrl).then((data) => {
-        console.log('loading: ', initUrl);
+app.get('/getLikes', async (req, res) => {
 
-        if (data) {
-            const tmp = Parser[functionName](data, type);
-            tmp.list.forEach((item) => console.log(item));
+    const id = (req.query.id) ? req.query.id : null;
+    const url = (req.query.url) ? req.query.url : null;
+    console.log('getLikes', 'id:', id, 'url:', url);
 
-            info.list = [...info.list, ...tmp.list];
-            info.nextItemsUrl = tmp.nextItemsUrl;
-            if (tmp.total){
-                info.total = tmp.total;
-            }
-
-            if (info.nextItemsUrl){
-               getData(info.nextItemsUrl, functionName, type);
-            } else {
-                console.log('End of list');
-            }
-        } else {
-            console.log('No Data');
-        }
-    });
-    return info;
-}
-
-
-async function App() {
-    console.log('Loading...');
-
-    /*
-    * Sample functions to loop through some data types
-    * */
-
-    async function getLikesFromID(postId, fullUrl) {
-        const url = (postId) ? "browse/likes/?id=" + postId : fullUrl;
-        getData(url, 'getListByType', 'userLikes');
+    try {
+        const data = await funcs.getLikesFromID(id, url);
+        res.send(data);
+    } catch (e) {
+        res.send(e);
     }
+});
 
+app.get('/getShares', async (req, res) => {
 
-    async function getSharesFromID(postId, fullUrl) {
-        const url = (postId) ? "browse/shares/?id=" + postId : fullUrl;
-        getData(url, 'getListByType', 'shares');
+    const id = (req.query.id) ? req.query.id : null;
+    const url = (req.query.url) ? req.query.url : null;
+    console.log('getShares', 'id:', id, 'url:', url);
+
+    try {
+        const data = await funcs.getSharesFromID(id, url);
+        res.send(data);
+    } catch (e) {
+        const re = {
+            err: e
+        };
+        res.send(re);
     }
+});
 
+app.get('/getFrinds', async (req, res) => {
 
-    async function getUserFrinds(userName, fullUrl){
-        const url = (userName) ? userName + '/friends' : fullUrl;
-        getData(url, 'getListByType', 'userFriends');
+    const name = (req.query.name) ? req.query.name : null;
+    const url = (req.query.url) ? req.query.url : null;
+    console.log('getFrinds', 'name:', name, 'url:', url);
 
+    try {
+        const data = await funcs.getUserFrinds(name, url);
+        res.send(data);
+    } catch (e) {
+        res.send(e);
     }
-
-    async function testPageLoad(url){
-        await getURL.loadURL(url)
-            .then((data) => {
-            return data;
-        })
-    }
+});
 
 
-    // getUserFrinds(testData.user);
+app.listen(port, () => console.log('Botator app listening on port ', port));
 
-    getLikesFromID(null, testData.likesFullUrl);
-    // getSharesFromID(testData.itemID);
-    // testPageLoad('/story.php?story_fbid=2622896591058463&id=366827403332071');
 
-    // FB API samples
-    // FBConn.getLikes(testData.itemID);
-    // FBConn.getUser(testData.userID);
-}
+// getUserFrinds(testData.user);
 
-setTimeout(() => App(), 3000);
+// getLikesFromID(null, testData.likesFullUrl);
+// getSharesFromID(testData.itemID);
+// testPageLoad('/story.php?story_fbid=2622896591058463&id=366827403332071');
+
+// FB API samples
+// FBConn.getLikes(testData.itemID);
+// FBConn.getUser(testData.userID);
+
+
 
 
 
