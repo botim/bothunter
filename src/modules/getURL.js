@@ -3,10 +3,17 @@ import puppeteer from 'puppeteer';
 import {cookie, userAgent} from '../../conf/conf';
 
 // settings
+const proxy = 'http://66.188.116.131:57448';
 const baseurl = 'http://m.facebook.com/';
 const puppeteerConf = {
     // args: [ '--proxy-server=5.160.219.86:8080' ],
-    args: ['--no-sandbox'],
+    args: [
+        '--disable-setuid-sandbox',
+        '--no-sandbox',
+        '--disable-gpu',
+        '--no-first-run',
+        `--proxy-server=` + proxy,
+    ],
     headless: true
 };
 
