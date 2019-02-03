@@ -4,8 +4,11 @@ import funcs from './modules/Funcs';
 import express from 'express';
 import getUrl from './modules/getURL';
 
+const timeout = require('connect-timeout');
+
 const app = express();
 const port = 1984;
+app.use(timeout(5000000));
 
 app.get('/getLikes', async (req, res) => {
 
