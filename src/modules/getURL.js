@@ -25,7 +25,6 @@ const skippedResources = [
     'googletagmanager',
     'google',
     'fontawesome',
-    'facebook',
     'analytics',
     'optimizely',
     'clicktale',
@@ -41,7 +40,6 @@ const proxy = 'http://191.102.91.122:80';
 
 const baseurl = 'http://m.facebook.com/';
 const puppeteerConf = {
-    // args: [ '--proxy-server=5.160.219.86:8080' ],
     args: [
         '--disable-setuid-sandbox',
         '--no-sandbox',
@@ -65,9 +63,9 @@ module.exports = {
         await page.setUserAgent(userAgent);
 
         try {
-
             // add header for the navigation requests
             page.on('request', request => {
+                const requestUrl = request._url.split('?')[0].split('#')[0];
                 // ignore unneeded requests
                 if (
                     blockedResourceTypes.indexOf(request.resourceType()) !== -1 ||
@@ -85,15 +83,13 @@ module.exports = {
                 // Add a new header for navigation request.
                 const headers = request.headers();
                 headers['Access-Control-Allow-Origin'] = '*';
-
                 headers['Cookie'] = cookie;
-
                 request.continue({headers});
             });
 
             // navigate to the website
             const response = await page.goto(fullurl, {
-                timeout: 30000,
+                timeout: 25000,
                 waitUntil: 'networkidle2',
             });
 
@@ -110,7 +106,8 @@ module.exports = {
             }
         } catch (err) {
             console.error(err);
-            throw new Error('page.goto/waitForSelector timed out.');
+            return {err: 'error loading:' + err};
+            // throw new Error('error loading:' + err);
         }
 
     }

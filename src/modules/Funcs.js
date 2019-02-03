@@ -19,7 +19,7 @@ async function getData(initUrl, functionName, type, _info) {
     console.log('loading URL: ', initUrl);
     await getURL.loadURL(initUrl).then(async (data) => {
 
-        if (data) {
+        if (data && !data.err) {
             const tmp = await Parser[functionName](data, type);
 
             if (tmp.err) {
@@ -39,9 +39,10 @@ async function getData(initUrl, functionName, type, _info) {
                 console.log('End of list');
             }
         } else {
-            console.log('No Data');
-            info.page = data;
-            info.err = 'No Data found';
+            const msg = (data.err) ? data.err : 'No Data';
+            console.log(msg);
+            info.page = (data.err) ? '' : data;
+            info.err = msg;
         }
     });
 
