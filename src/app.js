@@ -4,11 +4,11 @@ import funcs from './modules/Funcs';
 import express from 'express';
 import getUrl from './modules/getURL';
 
-const timeout = require('connect-timeout');
+// const timeout = require('connect-timeout');
 
 const app = express();
 const port = 1984;
-app.use(timeout(5000000));
+// app.use(timeout(300000));
 
 app.get('/getLikes', async (req, res) => {
 
@@ -88,7 +88,7 @@ app.get('/', (req, res) => {
 
 
 
-app.listen(port, () => console.log('Botator app listening on port ', port));
+app.listen(port, () => console.log('Botator app listening on port ', port)).setTimeout(500000);
 
 
 async function test(){
