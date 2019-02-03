@@ -26,7 +26,7 @@ module.exports = {
         });
 
         if (!re || !re.length){
-            $('span').filter(r => $(data).text().trim().indexOf(search[selector]) > -1).parent();
+            $('span').filter(r => $(data).text().trim().indexOf(this.search[selector]) > -1).parent();
         }
 
         return re;
