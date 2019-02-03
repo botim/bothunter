@@ -34,11 +34,11 @@ const skippedResources = [
     'tiqcdn',
 ];
 
-const proxy = 'http://191.102.91.122:80';
+const proxy = 'http://104.236.214.59:80';
 
 // settings
 
-const baseurl = 'http://m.facebook.com/';
+const baseurl = 'https://m.facebook.com/';
 const puppeteerConf = {
     args: [
         '--disable-setuid-sandbox',
@@ -48,12 +48,15 @@ const puppeteerConf = {
         '--disable-setuid-sandbox=true',
         '--window-size=1920x1080',
         '--disable-accelerated-2d-canvas=true'
-        // , `--proxy-server=` + proxy,
+        // , `--proxy-server=` + proxy
     ],
     headless: true
 };
 
 module.exports = {
+    init:async function (){
+        return this.loadURL('');
+    },
     loadURL: async function (url) {
         const fullurl = baseurl + url;
         const browser = await puppeteer.launch(puppeteerConf);
@@ -89,7 +92,7 @@ module.exports = {
 
             // navigate to the website
             const response = await page.goto(fullurl, {
-                timeout: 25000,
+                timeout: 35000,
                 waitUntil: 'networkidle2',
             });
 

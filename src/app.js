@@ -2,6 +2,7 @@
 
 import funcs from './modules/Funcs';
 import express from 'express';
+import getUrl from './modules/getURL';
 
 const app = express();
 const port = 1984;
@@ -86,6 +87,16 @@ app.get('/', (req, res) => {
 
 app.listen(port, () => console.log('Botator app listening on port ', port));
 
+
+async function test(){
+const test = await getUrl.init();
+    if (test && typeof test === 'string' && test.indexOf('<') === 0){
+        console.log('Init connection test passed...');
+    } else {
+        console.log('Init Test Fail:', (test.err) ? test.err : test);
+    }
+}
+test();
 
 process.on('uncaughtException', function(err) {
     // handle the error safely
