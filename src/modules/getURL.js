@@ -3,7 +3,7 @@ import puppeteer from 'puppeteer';
 import {cookie, userAgent} from '../../conf/conf';
 
 // settings
-const proxy = 'http://66.188.116.131:57448';
+const proxy = 'http://191.102.91.122:80';
 const baseurl = 'http://m.facebook.com/';
 const puppeteerConf = {
     // args: [ '--proxy-server=5.160.219.86:8080' ],

@@ -89,7 +89,7 @@ app.listen(port, () => console.log('Botator app listening on port ', port));
 
 process.on('uncaughtException', function(err) {
     // handle the error safely
-    console.log(err)
+    console.log('Uncaught Exception: ', err)
 })
 
 
