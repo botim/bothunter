@@ -2,8 +2,43 @@
 import puppeteer from 'puppeteer';
 import {cookie, userAgent} from '../../conf/conf';
 
-// settings
+const blockedResourceTypes = [
+    'image',
+    'media',
+    'font',
+    'texttrack',
+    'object',
+    'beacon',
+    'csp_report',
+    'imageset',
+];
+
+const skippedResources = [
+    'quantserve',
+    'adzerk',
+    'doubleclick',
+    'adition',
+    'exelator',
+    'sharethrough',
+    'cdn.api.twitter',
+    'google-analytics',
+    'googletagmanager',
+    'google',
+    'fontawesome',
+    'facebook',
+    'analytics',
+    'optimizely',
+    'clicktale',
+    'mixpanel',
+    'zedo',
+    'clicksor',
+    'tiqcdn',
+];
+
 const proxy = 'http://191.102.91.122:80';
+
+// settings
+
 const baseurl = 'http://m.facebook.com/';
 const puppeteerConf = {
     // args: [ '--proxy-server=5.160.219.86:8080' ],
@@ -12,7 +47,10 @@ const puppeteerConf = {
         '--no-sandbox',
         '--disable-gpu',
         '--no-first-run',
-        `--proxy-server=` + proxy,
+        '--disable-setuid-sandbox=true',
+        '--window-size=1920x1080',
+        '--disable-accelerated-2d-canvas=true'
+        // , `--proxy-server=` + proxy,
     ],
     headless: true
 };
@@ -30,11 +68,15 @@ module.exports = {
 
             // add header for the navigation requests
             page.on('request', request => {
-                // ignore image requests
-                if (request.resourceType() === 'image') {
+                // ignore unneeded requests
+                if (
+                    blockedResourceTypes.indexOf(request.resourceType()) !== -1 ||
+                    skippedResources.some(resource => requestUrl.indexOf(resource) !== -1)
+                ){
                     request.abort();
                     return;
                 }
+
                 // Do nothing in case of non-navigation requests.
                 if (!request.isNavigationRequest()) {
                     request.continue();
@@ -51,8 +93,8 @@ module.exports = {
 
             // navigate to the website
             const response = await page.goto(fullurl, {
-                timeout: 25000,
-                waitUntil: 'domcontentloaded',
+                timeout: 30000,
+                waitUntil: 'networkidle2',
             });
 
             if (response._status < 400) {
