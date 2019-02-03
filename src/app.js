@@ -1,24 +1,10 @@
 "use strict";
 
 import funcs from './modules/Funcs';
-
 import express from 'express';
-
-
-const testData = {
-    video: '/ufi/reaction/profile/browser/fetch/?limit=10&total_count=351&ft_ent_identifier=281112199228679',
-    likesFullUrl: 'ufi/reaction/profile/browser/?ft_ent_identifier=2027002237395095',
-    post: 'netanyahu/photos/a.10151681566507076/10156096314307076',
-    likes: '2027002237395095',
-    user: 'peter.huwel',  //'moshe.dzanashvili'  // 'michael.even.54' // MAYASR
-    itemID: '366827403332071',
-    userID: '550385403'
-};
-
 
 const app = express();
 const port = 1984;
-
 
 app.get('/getLikes', async (req, res) => {
 
@@ -30,7 +16,11 @@ app.get('/getLikes', async (req, res) => {
         const data = await funcs.getLikesFromID(id, url);
         res.send(data);
     } catch (e) {
-        res.send(e);
+        console.log('error loading ', url ,' : ', e);
+        const re = {
+            err: e
+        };
+        res.send(re);
     }
 });
 
@@ -44,6 +34,7 @@ app.get('/getShares', async (req, res) => {
         const data = await funcs.getSharesFromID(id, url);
         res.send(data);
     } catch (e) {
+        console.log('error loading ', url ,' : ', e);
         const re = {
             err: e
         };
@@ -61,12 +52,48 @@ app.get('/getFrinds', async (req, res) => {
         const data = await funcs.getUserFrinds(name, url);
         res.send(data);
     } catch (e) {
-        res.send(e);
+        console.log('error loading ', url ,' : ', e);
+        const re = {
+            err: e
+        };
+        res.send(re);
     }
 });
 
 
+app.get('/testPage', async (req, res) => {
+
+    const url = (req.query.url) ? req.query.url : null;
+    console.log('testPageLoad', 'name:', name, 'url:', url);
+
+    try {
+        const data = await funcs.testPageLoad(url);
+        res.send(data);
+    } catch (e) {
+        console.log('error loading ', url ,' : ', e);
+        const re = {
+            err: e
+        };
+        res.send(re);
+    }
+});
+
+app.get('/', (req, res) => {
+    res.send('Not now, i\'m too busy');
+});
+
+
+
 app.listen(port, () => console.log('Botator app listening on port ', port));
+
+
+
+
+
+
+
+
+
 
 
 // getUserFrinds(testData.user);
@@ -82,6 +109,17 @@ app.listen(port, () => console.log('Botator app listening on port ', port));
 
 
 
+/*
+const testData = {
+    video: '/ufi/reaction/profile/browser/fetch/?limit=10&total_count=351&ft_ent_identifier=281112199228679',
+    likesFullUrl: 'ufi/reaction/profile/browser/?ft_ent_identifier=2027002237395095',
+    post: 'netanyahu/photos/a.10151681566507076/10156096314307076',
+    likes: '2027002237395095',
+    user: 'peter.huwel',  //'moshe.dzanashvili'  // 'michael.even.54' // MAYASR
+    itemID: '366827403332071',
+    userID: '550385403'
+};
+*/
 
 
 

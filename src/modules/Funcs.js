@@ -8,6 +8,7 @@ const Iinfo = {
     list: [],
     total: 0,
     nextItemsUrl: '',
+    page:'',
     err: ''
 };
 
@@ -15,8 +16,8 @@ async function getData(initUrl, functionName, type, _info) {
 
     let info = (_info) ? _info : Iinfo;
 
+    console.log('loading URL: ', initUrl);
     await getURL.loadURL(initUrl).then(async (data) => {
-        console.log('loading: ', initUrl);
 
         if (data) {
             const tmp = await Parser[functionName](data, type);
@@ -39,6 +40,7 @@ async function getData(initUrl, functionName, type, _info) {
             }
         } else {
             console.log('No Data');
+            info.page = data;
             info.err = 'No Data found';
         }
     });
