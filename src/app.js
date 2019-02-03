@@ -30,16 +30,16 @@ app.get('/getShares', async (req, res) => {
     const url = (req.query.url) ? req.query.url : null;
     console.log('getShares', 'id:', id, 'url:', url);
 
-    // try {
+    try {
         const data = await funcs.getSharesFromID(id, url);
         res.send(data);
-    // } catch (e) {
-    //     console.log('error loading ', url ,' : ', e);
-    //     const re = {
-    //         err: e
-    //     };
-    //     res.send(re);
-    // }
+    } catch (e) {
+        console.log('error loading ', url ,' : ', e);
+        const re = {
+            err: e
+        };
+        res.send(re);
+    }
 });
 
 app.get('/getFrinds', async (req, res) => {
@@ -87,7 +87,10 @@ app.get('/', (req, res) => {
 app.listen(port, () => console.log('Botator app listening on port ', port));
 
 
-
+process.on('uncaughtException', function(err) {
+    // handle the error safely
+    console.log(err)
+})
 
 
 
