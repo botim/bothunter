@@ -6,6 +6,7 @@ import {cookie, userAgent} from '../../conf/conf';
 const baseurl = 'http://m.facebook.com/';
 const puppeteerConf = {
     // args: [ '--proxy-server=5.160.219.86:8080' ],
+    args: ['--no-sandbox'],
     headless: true
 };
 
