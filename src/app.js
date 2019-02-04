@@ -1,92 +1,30 @@
 "use strict";
 
-import funcs from './modules/Funcs';
 import express from 'express';
 import getUrl from './modules/getURL';
+import router from './routes';
 
 // const timeout = require('connect-timeout');
 
 const app = express();
 const port = 1984;
-// app.use(timeout(300000));
+const appKey = 'welvlmlsorh765cn9d723sa72ew0342';
 
-app.get('/getLikes', async (req, res) => {
 
-    const id = (req.query.id) ? req.query.id : null;
-    const url = (req.query.url) ? req.query.url : null;
-    console.log('getLikes', 'id:', id, 'url:', url);
-
-    try {
-        const data = await funcs.getLikesFromID(id, url);
-        res.send(data);
-    } catch (e) {
-        console.log('error loading ', url ,' : ', e);
-        const re = {
-            err: e
-        };
-        res.send(re);
-    }
-});
-
-app.get('/getShares', async (req, res) => {
-
-    const id = (req.query.id) ? req.query.id : null;
-    const url = (req.query.url) ? req.query.url : null;
-    console.log('getShares', 'id:', id, 'url:', url);
-
-    try {
-        const data = await funcs.getSharesFromID(id, url);
-        res.send(data);
-    } catch (e) {
-        console.log('error loading ', url ,' : ', e);
-        const re = {
-            err: e
-        };
-        res.send(re);
-    }
-});
-
-app.get('/getFrinds', async (req, res) => {
-
-    const name = (req.query.name) ? req.query.name : null;
-    const url = (req.query.url) ? req.query.url : null;
-    console.log('getFrinds', 'name:', name, 'url:', url);
-
-    try {
-        const data = await funcs.getUserFrinds(name, url);
-        res.send(data);
-    } catch (e) {
-        console.log('error loading ', url ,' : ', e);
-        const re = {
-            err: e
-        };
-        res.send(re);
-    }
+app.use( (req, res, next) => {
+    const authorised = (req.query.key && req.query.key === appKey);
+    console.log('authorised:', authorised);
+    next();
+    // if (!authorised) {
+    //     return res.status(403).send("Unauthorised!");
+    // }
+    // else {
+    //     next();
+    // }
 });
 
 
-app.get('/testPage', async (req, res) => {
-
-    const url = (req.query.url) ? req.query.url : null;
-    console.log('testPageLoad', 'name:', name, 'url:', url);
-
-    try {
-        const data = await funcs.testPageLoad(url);
-        res.send(data);
-    } catch (e) {
-        console.log('error loading ', url ,' : ', e);
-        const re = {
-            err: e
-        };
-        res.send(re);
-    }
-});
-
-app.get('/', (req, res) => {
-    res.send('Not now, i\'m too busy');
-});
-
-
+app.use('/', router);
 
 app.listen(port, () => console.log('Botator app listening on port ', port)).setTimeout(500000);
 
@@ -104,7 +42,7 @@ test();
 process.on('uncaughtException', function(err) {
     // handle the error safely
     console.log('Uncaught Exception: ', err)
-})
+});
 
 
 

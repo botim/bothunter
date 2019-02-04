@@ -92,16 +92,12 @@ module.exports = {
 
             // navigate to the website
             const response = await page.goto(fullurl, {
-                timeout: 35000,
+                timeout: 25000,
                 waitUntil: 'networkidle2',
             });
 
             if (response._status < 400) {
-                // await page.waitFor('#m_more_friends a');
-
-                console.log('Loading page: ', fullurl);
-                // await page.waitForNavigation( { waitUntil : 'networkidle2' } );
-                await page.waitFor(1000);
+                await page.waitFor(500);
                 const html = await page.content();
                 await browser.close();
 
