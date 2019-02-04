@@ -4,8 +4,6 @@ import express from 'express';
 import getUrl from './modules/getURL';
 import router from './routes';
 
-// const timeout = require('connect-timeout');
-
 const app = express();
 const port = 1984;
 const appKey = 'welvlmlsorh765cn9d723sa72ew0342';
