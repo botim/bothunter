@@ -14,10 +14,11 @@ const Iinfo = {
 
 async function getData(initUrl, functionName, type, _info) {
 
-    let info = (_info) ? _info : Iinfo;
-
     console.log('loading URL: ', initUrl);
+    let info = (_info) ? _info : Object.assign(Iinfo);
+
     await getURL.loadURL(initUrl).then(async (data) => {
+
 
         if (data && !data.err) {
             const tmp = await Parser[functionName](data, type);

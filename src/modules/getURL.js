@@ -97,7 +97,7 @@ module.exports = {
             });
 
             if (response._status < 400) {
-                await page.waitFor(500);
+                await page.waitFor(1000);
                 const html = await page.content();
                 await browser.close();
 
