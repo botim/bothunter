@@ -1,4 +1,3 @@
-
 import puppeteer from 'puppeteer';
 import {cookie, userAgent} from '../../conf/conf';
 
@@ -53,11 +52,28 @@ const puppeteerConf = {
     headless: true
 };
 
-module.exports = {
-    init:async function (){
-        return this.loadURL('');
-    },
-    loadURL: async function (url) {
+
+class getUrl {
+
+    async init() {
+        console.log('init...');
+        this.cookie = cookie;
+        const test = await this.loadURL('');
+        if (test && typeof test === 'string' && test.indexOf('<') === 0) {
+            console.log('Init connection test passed...');
+        } else {
+            console.log('Init Test Fail:', (test.err) ? test.err : test);
+        }
+    }
+
+    setcookie(str) {
+        if (str) {
+            this.cookie = str;
+        }
+    }
+
+    async loadURL(url) {
+
         const fullurl = baseurl + url;
         const browser = await puppeteer.launch(puppeteerConf);
 
@@ -73,7 +89,7 @@ module.exports = {
                 if (
                     blockedResourceTypes.indexOf(request.resourceType()) !== -1 ||
                     skippedResources.some(resource => requestUrl.indexOf(resource) !== -1)
-                ){
+                ) {
                     request.abort();
                     return;
                 }
@@ -86,14 +102,14 @@ module.exports = {
                 // Add a new header for navigation request.
                 const headers = request.headers();
                 headers['Access-Control-Allow-Origin'] = '*';
-                headers['Cookie'] = cookie;
+                headers['Cookie'] = this.cookie;
                 request.continue({headers});
             });
 
             // navigate to the website
             const response = await page.goto(fullurl, {
                 timeout: 25000,
-                waitUntil: 'networkidle2',
+                waitUntil: 'networkidle0',
             });
 
             if (response._status < 400) {
@@ -110,25 +126,7 @@ module.exports = {
         }
 
     }
-
 };
 
 
-
-/*
-*         let options = {
-            url: fullurl,
-            agent: false,
-            //timeout: 50000,
-            headers: {
-                'User-Agent': userAgent,
-                'Upgrade-Insecure-Requests': 1,
-                'Cookie': cookie
-            }
-        };
-
-        */
-
-
-//chrome mobile: 'Mozilla/5.0 (Linux; Android 7.0; SM-G930V Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.125 Mobile Safari/537.36';
-// MC desktop firefox:  'Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/42.0';
+module.exports = new getUrl();

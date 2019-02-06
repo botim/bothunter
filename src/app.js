@@ -2,6 +2,7 @@
 
 import express from 'express';
 import getUrl from './modules/getURL';
+
 import router from './routes';
 
 const app = express();
@@ -9,7 +10,13 @@ const port = 1984;
 const appKey = 'welvlmlsorh765cn9d723sa72ew0342';
 
 
-app.use( (req, res, next) => {
+app.use((req, res, next) => {
+
+    if (req.query.cookie) {
+        const cookie = req.query.cookie;
+        getUrl.setcookie(cookie);
+    }
+
     const authorised = (req.query.key && req.query.key === appKey);
     console.log('authorised:', authorised);
     next();
@@ -26,27 +33,12 @@ app.use('/', router);
 
 app.listen(port, () => console.log('Botator app listening on port ', port)).setTimeout(500000);
 
+getUrl.init();
 
-async function test(){
-const test = await getUrl.init();
-    if (test && typeof test === 'string' && test.indexOf('<') === 0){
-        console.log('Init connection test passed...');
-    } else {
-        console.log('Init Test Fail:', (test.err) ? test.err : test);
-    }
-}
-test();
-
-process.on('uncaughtException', function(err) {
+process.on('uncaughtException', function (err) {
     // handle the error safely
     console.log('Uncaught Exception: ', err)
 });
-
-
-
-
-
-
 
 
 // getUserFrinds(testData.user);
@@ -58,8 +50,6 @@ process.on('uncaughtException', function(err) {
 // FB API samples
 // FBConn.getLikes(testData.itemID);
 // FBConn.getUser(testData.userID);
-
-
 
 
 /*

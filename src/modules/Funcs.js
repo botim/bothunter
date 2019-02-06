@@ -40,9 +40,9 @@ async function getData(initUrl, functionName, type, _info) {
                 console.log('End of list');
             }
         } else {
-            const msg = (data.err) ? data.err : 'No Data';
+            const msg = (data && data.err) ? data.err : 'No Data';
             console.log(msg);
-            info.page = (data.err) ? '' : data;
+            info.page = data;
             info.err = msg;
         }
     });
