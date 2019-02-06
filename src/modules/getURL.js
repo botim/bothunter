@@ -33,13 +33,15 @@ const skippedResources = [
     'tiqcdn',
 ];
 
-const proxy = 'http://104.236.214.59:80';
+const proxy = 'socks5://127.0.0.1:9050';
 
 // settings
 
 const baseurl = 'https://m.facebook.com/';
 const puppeteerConf = {
     args: [
+        `--proxy-server=` + proxy,
+        `--ignore-certificate-errors`,
         '--disable-setuid-sandbox',
         '--no-sandbox',
         '--disable-gpu',
@@ -47,7 +49,6 @@ const puppeteerConf = {
         '--disable-setuid-sandbox=true',
         '--window-size=1920x1080',
         '--disable-accelerated-2d-canvas=true'
-        // , `--proxy-server=` + proxy
     ],
     headless: true
 };
