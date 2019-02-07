@@ -41,29 +41,5 @@ process.on('uncaughtException', function (err) {
 });
 
 
-// getUserFrinds(testData.user);
-
-// getLikesFromID(null, testData.likesFullUrl);
-// getSharesFromID(testData.itemID);
-// testPageLoad('/story.php?story_fbid=2622896591058463&id=366827403332071');
-
-// FB API samples
-// FBConn.getLikes(testData.itemID);
-// FBConn.getUser(testData.userID);
-
-
-/*
-const testData = {
-    video: '/ufi/reaction/profile/browser/fetch/?limit=10&total_count=351&ft_ent_identifier=281112199228679',
-    likesFullUrl: 'ufi/reaction/profile/browser/?ft_ent_identifier=2027002237395095',
-    post: 'netanyahu/photos/a.10151681566507076/10156096314307076',
-    likes: '2027002237395095',
-    user: 'peter.huwel',  //'moshe.dzanashvili'  // 'michael.even.54' // MAYASR
-    itemID: '366827403332071',
-    userID: '550385403'
-};
-*/
-
-
 
 

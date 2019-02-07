@@ -1,6 +1,12 @@
 import puppeteer from 'puppeteer';
 import {cookie, userAgent} from '../../conf/conf';
 
+const useProxy = true; // set to use proxy by the settings below.
+const proxy = 'socks5://127.0.0.1:9050';
+
+const baseurl = 'https://m.facebook.com/';  //'https://facebookcorewwwi.onion/';
+
+/* Resource types to block from loading, for speed up and less resources */
 const blockedResourceTypes = [
     'image',
     'media',
@@ -33,14 +39,12 @@ const skippedResources = [
     'tiqcdn',
 ];
 
-const proxy = 'socks5://127.0.0.1:9050';
 
 // settings
 
-const baseurl = 'https://m.facebook.com/';
+
 const puppeteerConf = {
     args: [
-        `--proxy-server=` + proxy,
         `--ignore-certificate-errors`,
         '--disable-setuid-sandbox',
         '--no-sandbox',
@@ -53,12 +57,20 @@ const puppeteerConf = {
     headless: true
 };
 
+if (useProxy){
+    puppeteerConf.args.push(
+        `--proxy-server=` + proxy
+    )
+}
+
 
 class getUrl {
 
     async init() {
         console.log('init...');
         this.cookie = cookie;
+
+        // test connection to facebook
         const test = await this.loadURL('');
         if (test && typeof test === 'string' && test.indexOf('<') === 0) {
             console.log('Init connection test passed...');
@@ -109,7 +121,7 @@ class getUrl {
 
             // navigate to the website
             const response = await page.goto(fullurl, {
-                timeout: 25000,
+                timeout: 50000,
                 waitUntil: 'networkidle0',
             });
 

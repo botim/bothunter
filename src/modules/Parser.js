@@ -5,7 +5,7 @@ module.exports = {
     selectors: {
         errors:['div:nth-child(2) div div:nth-child(1) > span'],
         userLikes: ['._55wp a:first-child strong', ' div:nth-child(2) > a:nth-child(1) a', 'h3.be a', ' div div div div div a:nth-child(1)'],
-        userFriends: [' td.v.s:nth-child(2) a.ce', ' td.v.s:nth-child(2) a.bn'],
+        userFriends: [' td:nth-child(2) a', 'td:nth-child(2) a', 'li:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1)'],
         total: ['div.t > a.u.v:nth-child(1)', 'div:nth-child(1) div:nth-child(2) div div:nth-child(1) > h3'],
         shares: ['div.v div.y a:nth-child(1)'],
         NextUrl: ['#m_more_friends a', 'table.i.j tr:nth-child(1) td div.e a']
