@@ -1,81 +1,74 @@
-import getURL from "./getURL";
-import Parser from "./Parser";
+import getURL from './getURL';
+import Parser from './Parser';
 
 // Unmark below, to use FB samples
 // import FBConn from './modules/FBConn';
 
 const Iinfo = {
-    list: [],
-    total: 0,
-    nextItemsUrl: '',
-    page:'',
-    err: ''
+  list: [],
+  total: 0,
+  nextItemsUrl: '',
+  page: '',
+  err: '',
 };
 
 async function getData(initUrl, functionName, type, _info) {
+  console.log('loading URL: ', initUrl);
+  const info = (_info) || Object.assign(Iinfo);
 
-    console.log('loading URL: ', initUrl);
-    let info = (_info) ? _info : Object.assign(Iinfo);
+  await getURL.loadURL(initUrl).then(async (data) => {
+    if (data && !data.err) {
+      const tmp = await Parser[functionName](data, type);
 
-    await getURL.loadURL(initUrl).then(async (data) => {
+      if (tmp.err) {
+        info.err = tmp.err;
+      }
 
+      if (tmp.total) {
+        info.total = tmp.total;
+      }
 
-        if (data && !data.err) {
-            const tmp = await Parser[functionName](data, type);
+      info.list = [...info.list, ...tmp.list];
+      info.nextItemsUrl = tmp.nextItemsUrl;
 
-            if (tmp.err) {
-                info.err = tmp.err;
-            }
+      if (info.nextItemsUrl) {
+        return await getData(info.nextItemsUrl, functionName, type, info);
+      }
+      console.log('End of list');
+    } else {
+      const msg = (data && data.err) ? data.err : 'No Data';
+      console.log(msg);
+      info.page = data;
+      info.err = msg;
+    }
+  });
 
-            if (tmp.total) {
-                info.total = tmp.total;
-            }
-
-            info.list = [...info.list, ...tmp.list];
-            info.nextItemsUrl = tmp.nextItemsUrl;
-
-            if (info.nextItemsUrl) {
-                return await getData(info.nextItemsUrl, functionName, type, info);
-            } else {
-                console.log('End of list');
-            }
-        } else {
-            const msg = (data && data.err) ? data.err : 'No Data';
-            console.log(msg);
-            info.page = data;
-            info.err = msg;
-        }
-    });
-
-    return info;
-};
-
+  return info;
+}
 
 
 module.exports = {
 
 
-    getLikesFromID: async (postId, fullUrl) => {
-        const url = (postId) ? "ufi/reaction/profile/browser/?ft_ent_identifier=" + postId : fullUrl;
-        return getData(url, 'getListByType', 'userLikes');
-    },
+  getLikesFromID: async (postId, fullUrl) => {
+    const url = (postId) ? `ufi/reaction/profile/browser/?ft_ent_identifier=${postId}` : fullUrl;
+    return getData(url, 'getListByType', 'userLikes');
+  },
 
 
-    getSharesFromID: async (postId, fullUrl) => {
-        const url = (postId) ? "browse/shares/?id=" + postId : fullUrl;
-        return getData(url, 'getListByType', 'shares');
-    },
+  getSharesFromID: async (postId, fullUrl) => {
+    const url = (postId) ? `browse/shares/?id=${postId}` : fullUrl;
+    return getData(url, 'getListByType', 'shares');
+  },
 
-    getUserFrinds: async (userName, fullUrl) => {
-        const url = (userName) ? userName + '/friends' : fullUrl;
-        return getData(url, 'getListByType', 'userFriends');
-    },
+  getUserFrinds: async (userName, fullUrl) => {
+    const url = (userName) ? `${userName}/friends` : fullUrl;
+    return getData(url, 'getListByType', 'userFriends');
+  },
 
-    testPageLoad: async (url) => {
-        await getURL.loadURL(url)
-            .then((data) => {
-                return data;
-            })
-    }
+  testPageLoad: async (url) => {
+    await getURL.loadURL(url)
+      .then(data => data);
+  },
 
 };

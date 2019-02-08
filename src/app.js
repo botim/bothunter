@@ -1,5 +1,3 @@
-"use strict";
-
 import express from 'express';
 import getUrl from './modules/getURL';
 
@@ -11,21 +9,21 @@ const appKey = 'welvlmlsorh765cn9d723sa72ew0342';
 
 
 app.use((req, res, next) => {
+  console.log({ req });
+  if (req.query.cookie) {
+    const { cookie } = req.query;
+    getUrl.setcookie(cookie);
+  }
 
-    if (req.query.cookie) {
-        const cookie = req.query.cookie;
-        getUrl.setcookie(cookie);
-    }
-
-    const authorised = (req.query.key && req.query.key === appKey);
-    console.log('authorised:', authorised);
-    next();
-    // if (!authorised) {
-    //     return res.status(403).send("Unauthorised!");
-    // }
-    // else {
-    //     next();
-    // }
+  const authorised = (req.query.key && req.query.key === appKey);
+  console.log('authorised:', authorised);
+  next();
+  // if (!authorised) {
+  //     return res.status(403).send("Unauthorised!");
+  // }
+  // else {
+  //     next();
+  // }
 });
 
 
@@ -35,11 +33,7 @@ app.listen(port, () => console.log('Botator app listening on port ', port)).setT
 
 getUrl.init();
 
-process.on('uncaughtException', function (err) {
-    // handle the error safely
-    console.log('Uncaught Exception: ', err)
+process.on('uncaughtException', (err) => {
+  // handle the error safely
+  console.log('Uncaught Exception: ', err);
 });
-
-
-
-
