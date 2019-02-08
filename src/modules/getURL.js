@@ -138,6 +138,7 @@ class getUrl {
             // throw new Error('error loading:' + err);
         }
 
+        waitUntil: 'networkidle2',
     }
 };
 
