@@ -14,7 +14,7 @@ const Iinfo = {
 };
 
 async function getData(initUrl, functionName, type, _info) {
-  logger.info('Loading URL: ', { initUrl });
+  logger.info('Loading URL: ', { initUrl, functionName, type });
   const info = (_info) || Object.assign(Iinfo);
 
   await getURL.loadURL(initUrl).then(async (data) => {

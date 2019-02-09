@@ -1,4 +1,5 @@
 import cheerio from 'cheerio';
+import logger from './log';
 
 module.exports = {
 
@@ -63,6 +64,7 @@ module.exports = {
 
     reObj.nextItemsUrl = this.getNextUrl(data);
     const total = this.testSelector('total', data);
+    logger.info({ total });
 
     reObj.total = (total && total.length) ? total.text().replace(/\D/g, '') : null;
 

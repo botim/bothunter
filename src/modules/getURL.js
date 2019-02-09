@@ -55,7 +55,7 @@ const puppeteerConf = {
     '--window-size=1920x1080',
     '--disable-accelerated-2d-canvas=true',
   ],
-  headless: false,
+  headless: true,
 };
 
 if (useProxy) {
