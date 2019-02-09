@@ -1,5 +1,6 @@
 import puppeteer from 'puppeteer';
 import { cookie, userAgent } from '../../conf/conf';
+import logger from './log';
 
 const useProxy = false; // set to use proxy by the settings below.
 const proxy = 'socks5://127.0.0.1:9050';
@@ -66,15 +67,14 @@ if (useProxy) {
 
 class getUrl {
   async init() {
-    console.log('Initializing getURL');
+    logger.info('Initializing getURL');
     this.cookie = cookie;
-    console.log({ cookie });
-    console.log('Testing Facebook connection');
+    logger.debug({ cookie });
     const test = await this.loadURL('');
     if (test && typeof test === 'string' && test.indexOf('<') === 0) {
-      console.log('Init connection test passed...');
+      logger.info('Init connection test passed');
     } else {
-      console.log('Init Test Fail:', (test.err) ? test.err : test);
+      logger.error('Init Test Fail:', (test.err) ? test.err : test);
     }
   }
 
@@ -101,13 +101,13 @@ class getUrl {
       // add header for the navigation requests
       page.on('request', (request) => {
         const requestUrl = request._url.split('?')[0].split('#')[0];
-        console.log({ requestUrl });
+        logger.silly({ requestUrl });
         // ignore unneeded requests
         if (
           blockedResourceTypes.indexOf(request.resourceType()) !== -1
                     || skippedResources.some(resource => requestUrl.indexOf(resource) !== -1)
         ) {
-          console.log({ error: 'Aborting call', requestUrl });
+          logger.silly({ error: 'Aborting call', requestUrl });
           request.abort();
           return;
         }

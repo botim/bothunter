@@ -67,3 +67,4 @@ typings/
 
 /conf/
 /lib/
+package-lock.json
