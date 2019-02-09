@@ -1,5 +1,6 @@
 import getURL from './getURL';
 import Parser from './Parser';
+import logger from './log';
 
 // Unmark below, to use FB samples
 // import FBConn from './modules/FBConn';
@@ -13,7 +14,7 @@ const Iinfo = {
 };
 
 async function getData(initUrl, functionName, type, _info) {
-  console.log('loading URL: ', initUrl);
+  logger.info('Loading URL: ', { initUrl });
   const info = (_info) || Object.assign(Iinfo);
 
   await getURL.loadURL(initUrl).then(async (data) => {
