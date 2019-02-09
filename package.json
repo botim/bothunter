@@ -12,8 +12,7 @@
     "linkifyjs": "^2.1.7",
     "morgan": "~1.9.0",
     "puppeteer": "^1.11.0",
-    "request": "latest",
-    "winston": "^3.2.1"
+    "request": "latest"
   },
   "devDependencies": {
     "axios": "^0.18.0",
