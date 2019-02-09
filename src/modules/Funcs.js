@@ -35,7 +35,7 @@ async function getData(initUrl, functionName, type, _info) {
       if (info.nextItemsUrl) {
         return await getData(info.nextItemsUrl, functionName, type, info);
       }
-      console.log('End of list');
+      logger.info('End of list');
     } else {
       const msg = (data && data.err) ? data.err : 'No Data';
       console.log(msg);
@@ -63,6 +63,7 @@ module.exports = {
   },
 
   getUserFrinds: async (userName, fullUrl) => {
+    logger.info('Fetching friend list', { userName });
     const url = (userName) ? `${userName}/friends` : fullUrl;
     return getData(url, 'getListByType', 'userFriends');
   },
