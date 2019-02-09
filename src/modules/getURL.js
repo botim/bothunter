@@ -1,4 +1,6 @@
 import puppeteer from 'puppeteer';
+import logger from './log';
+
 import { cookie, userAgent } from '../../conf/conf';
 
 const useProxy = false; // set to use proxy by the settings below.
@@ -66,15 +68,15 @@ if (useProxy) {
 
 class getUrl {
   async init() {
-    console.log('Initializing getURL');
+    logger.info('Initializing getURL');
     this.cookie = cookie;
-    console.log({ cookie });
-    console.log('Testing Facebook connection');
+    logger.debug({ cookie });
+    logger.info('Testing Facebook connection');
     const test = await this.loadURL('');
     if (test && typeof test === 'string' && test.indexOf('<') === 0) {
-      console.log('Init connection test passed...');
+      logger.info('Init connection test passed');
     } else {
-      console.log('Init Test Fail:', (test.err) ? test.err : test);
+      logger.error({ message: 'Init Test Fail', error: (test.err) ? test.err : test });
     }
   }
 
@@ -86,35 +88,31 @@ class getUrl {
 
   async loadURL(url) {
     const fullurl = baseurl + url;
-    console.log({ fullurl });
+    logger.info({ message: 'Fetching url', fullurl });
     const browser = await puppeteer.launch(puppeteerConf);
 
-    console.log('A');
     const page = await browser.newPage();
-    console.log('B');
     await page.setRequestInterception(true);
-    console.log('C');
     await page.setUserAgent(userAgent);
-    console.log('D');
 
     try {
       // add header for the navigation requests
       page.on('request', (request) => {
         const requestUrl = request._url.split('?')[0].split('#')[0];
-        console.log({ requestUrl });
+        logger.debug({ requestUrl });
         // ignore unneeded requests
         if (
           blockedResourceTypes.indexOf(request.resourceType()) !== -1
                     || skippedResources.some(resource => requestUrl.indexOf(resource) !== -1)
         ) {
-          console.log({ error: 'Aborting call', requestUrl });
+          logger.debug({ message: 'Aborting call (irrelevant resource type)', requestUrl });
           request.abort();
           return;
         }
 
         // Do nothing in case of non-navigation requests.
         if (!request.isNavigationRequest()) {
-          console.log({ event: '!request.isNavigationRequest' });
+          logger.debug({ message: 'Ignoring non-navigation request' });
           request.continue();
           return;
         }
@@ -139,12 +137,10 @@ class getUrl {
         return html;
       }
     } catch (err) {
-      console.error(err);
+      logger.error(err);
       return { err: `error loading:${err}` };
-      // throw new Error('error loading:' + err);
     }
   }
 }
-
 
 module.exports = new getUrl();

@@ -9,7 +9,6 @@ module.exports = {
       "devDependencies": ["**/*.test.js", "**/test/**"],
     }],
     "no-continue": "off",
-    "no-console": "off",
     "no-mixed-operators": [
       "error",
       {
