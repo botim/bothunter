@@ -86,7 +86,7 @@ class getUrl {
 
   async loadURL(url) {
     const fullurl = baseurl + url;
-    console.log({ fullurl });
+    logger.info('Fetching URL', { fullurl });
     const browser = await puppeteer.launch(puppeteerConf);
 
     const page = await browser.newPage();
@@ -110,7 +110,7 @@ class getUrl {
 
         // Do nothing in case of non-navigation requests.
         if (!request.isNavigationRequest()) {
-          console.log({ event: '!request.isNavigationRequest' });
+          logger.silly('Non-navigation requests', { requestUrl });
           request.continue();
           return;
         }
