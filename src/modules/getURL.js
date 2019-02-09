@@ -89,13 +89,9 @@ class getUrl {
     console.log({ fullurl });
     const browser = await puppeteer.launch(puppeteerConf);
 
-    console.log('A');
     const page = await browser.newPage();
-    console.log('B');
     await page.setRequestInterception(true);
-    console.log('C');
     await page.setUserAgent(userAgent);
-    console.log('D');
 
     try {
       // add header for the navigation requests
